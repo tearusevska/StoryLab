@@ -1,0 +1,9 @@
+requests
+pandas
+plotly
+scikit-learn
+pytest
+google-genai
+python-dotenv
+groq
+Flask

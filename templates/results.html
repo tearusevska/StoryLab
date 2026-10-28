@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Резултати</h1>
+
+<section class="panel">
+    {% if history %}
+        {% for item in history|reverse %}
+            <details class="history-item">
+                <summary>{{ item.model }} · {{ item.genre }} · {{ item.metrics.word_count }} зборови</summary>
+                <p class="model-name">{{ item.language }} | {{ item.strategy }}</p>
+                <div class="story">{{ item.story }}</div>
+                <div class="metrics">
+                    <div><span>Зборови</span><strong>{{ item.metrics.word_count }}</strong></div>
+                    <div><span>Разновидност</span><strong>{{ item.metrics.lexical_diversity }}</strong></div>
+                    <div><span>Повторување</span><strong>{{ item.metrics.repetition_rate }}</strong></div>
+                </div>
+            </details>
+        {% endfor %}
+    {% else %}
+        <p>Сè уште нема зачувани резултати.</p>
+    {% endif %}
+</section>
+{% endblock %}

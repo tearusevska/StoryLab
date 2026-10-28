@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Создај своја приказна</h1>
+
+<div class="workspace">
+    <section class="panel">
+        <h2>Поставки</h2>
+        <form method="POST">
+            {% set show_model = true %}
+            {% include "_settings.html" %}
+            <button type="submit">✦ Генерирај приказна</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>Приказна</h2>
+        {% if result %}
+            <p class="model-name">Модел: {{ result.model }}</p>
+            <div class="story">{{ result.story }}</div>
+            <div class="metrics">
+                <div><span>Зборови</span><strong>{{ result.metrics.word_count }}</strong></div>
+                <div><span>Разновидност</span><strong>{{ result.metrics.lexical_diversity }}</strong></div>
+                <div><span>Повторување</span><strong>{{ result.metrics.repetition_rate }}</strong></div>
+            </div>
+            <details>
+                <summary>Употребен prompt</summary>
+                <pre>{{ prompt }}</pre>
+            </details>
+        {% else %}
+            <div class="empty"><span>📖</span><p>Тука ќе се појави приказната.</p></div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

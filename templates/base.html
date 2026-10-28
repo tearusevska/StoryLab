@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryLab</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <h2>📖 StoryLab</h2>
+        <nav>
+            <a href="{{ url_for('generate_page') }}">Генерирај приказна</a>
+            <a href="{{ url_for('compare_page') }}">Споредба на модели</a>
+            <a href="{{ url_for('interactive_page') }}">Интерактивна приказна</a>
+            <a href="{{ url_for('results_page') }}">Резултати</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Споредба на модели</h1>
+
+<section class="panel">
+    <form method="POST">
+        {% set show_model = false %}
+        {% include "_settings.html" %}
+        <button type="submit">Спореди Gemini 3.5 Flash-Lite и GPT OSS 20B</button>
+    </form>
+</section>
+
+{% if comparison %}
+<div class="comparison-grid">
+    {% for item in comparison %}
+    <section class="panel">
+        <h2>{{ item.model }}</h2>
+        {% if item.error %}
+            <div class="error">{{ item.error }}</div>
+        {% else %}
+            <div class="story">{{ item.story }}</div>
+            <div class="metrics">
+                <div><span>Зборови</span><strong>{{ item.metrics.word_count }}</strong></div>
+                <div><span>Разновидност</span><strong>{{ item.metrics.lexical_diversity }}</strong></div>
+                <div><span>Повторување</span><strong>{{ item.metrics.repetition_rate }}</strong></div>
+            </div>
+        {% endif %}
+    </section>
+    {% endfor %}
+</div>
+<details class="panel">
+    <summary>Употребен prompt</summary>
+    <pre>{{ prompt }}</pre>
+</details>
+{% endif %}
+{% endblock %}

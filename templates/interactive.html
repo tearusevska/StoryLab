@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Интерактивна приказна</h1>
+
+{% if not state or not state.story %}
+<section class="panel">
+    <h2>Поставки за приказната</h2>
+    <form method="POST">
+        {% set show_model = true %}
+        {% include "_settings.html" %}
+        <button type="submit" name="action" value="start">Започни приказна</button>
+    </form>
+</section>
+{% else %}
+<section class="panel">
+    <div class="row-between">
+        <h2>Твојата приказна</h2>
+        <span class="model-name">{{ state.model }}</span>
+    </div>
+
+    <div class="story">{{ state.story }}</div>
+
+    {% if state.finished %}
+        <h2>Приказната е завршена</h2>
+        <div class="metrics">
+            <div><span>AI продолженија</span><strong>{{ state.ai_continuations }}</strong></div>
+            <div><span>Избори на корисникот</span><strong>{{ state.user_choices }}</strong></div>
+            <div><span>Вкупно зборови</span><strong>{{ state.metrics.word_count }}</strong></div>
+        </div>
+        <form method="POST">
+            <button type="submit" name="action" value="start">Започни нова приказна</button>
+        </form>
+    {% else %}
+        <h2>Што ќе се случи следно?</h2>
+        <form method="POST">
+            {% for choice in state.choices %}
+                <label class="choice">
+                    <input type="radio" name="choice" value="{{ choice }}" required>
+                    <span>{{ choice }}</span>
+                </label>
+            {% endfor %}
+            <button type="submit" name="action" value="continue">Продолжи ја приказната</button>
+        </form>
+
+        <details>
+            <summary>Или внеси сопствен избор</summary>
+            <form method="POST">
+                <label>Твој предлог</label>
+                <input name="choice" placeholder="Што сакаш да се случи?" required>
+                <button type="submit" name="action" value="continue">Продолжи со мојот избор</button>
+            </form>
+        </details>
+
+        <form method="POST" class="ending-form">
+            <label>Насока за крајот (изборно)</label>
+            <input name="ending" placeholder="На пример: среќен, неочекуван или отворен крај">
+            <button type="submit" name="action" value="end" class="secondary">Заврши ја приказната</button>
+        </form>
+    {% endif %}
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,57 @@
+<label>Јазик</label>
+<select name="language">
+    {% for value, label in [("English", "English"), ("Macedonian", "Македонски")] %}
+        <option value="{{ value }}" {% if settings.language == value %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+</select>
+
+<label>Жанр</label>
+<select name="genre">
+    {% for value in ["Fantasy", "Mystery", "Adventure", "Science Fiction", "Romance", "Horror", "Drama", "Comedy"] %}
+        <option value="{{ value }}" {% if settings.genre == value %}selected{% endif %}>{{ value }}</option>
+    {% endfor %}
+</select>
+
+<label>Тема</label>
+<input name="topic" value="{{ settings.topic }}" required>
+
+<label>Стил</label>
+<select name="style">
+    {% for value in ["Descriptive", "Simple", "Humorous", "Suspenseful", "Emotional"] %}
+        <option value="{{ value }}" {% if settings.style == value %}selected{% endif %}>{{ value }}</option>
+    {% endfor %}
+</select>
+
+<label>Ликови</label>
+<input name="characters" value="{{ settings.characters }}" required>
+
+<label>Prompting стратегија</label>
+<select name="strategy">
+    {% for value in ["Zero-shot", "Few-shot", "Structured"] %}
+        <option value="{{ value }}" {% if settings.strategy == value %}selected{% endif %}>{{ value }}</option>
+    {% endfor %}
+</select>
+
+{% if show_model %}
+    <label>Модел</label>
+    <select name="model">
+        {% for value in ["Gemini 3.5 Flash-Lite", "GPT OSS 20B"] %}
+            <option value="{{ value }}"
+                {% if settings.model == value %}selected{% endif %}>
+                {{ value }}
+            </option>
+        {% endfor %}
+    </select>
+{% endif %}
+
+<label>Должина на сегментот</label>
+<select name="word_limit">
+    {% for value in ["100", "150", "250", "400"] %}
+        <option value="{{ value }}" {% if settings.word_limit == value %}selected{% endif %}>Околу {{ value }} зборови</option>
+    {% endfor %}
+</select>
+
+<label>Креативност: <span id="temperature-value">{{ settings.temperature }}</span></label>
+<input type="range" name="temperature" min="0" max="1" step="0.1"
+       value="{{ settings.temperature }}"
+       oninput="document.getElementById('temperature-value').textContent=this.value">
