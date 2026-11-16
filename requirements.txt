@@ -1,9 +1,11 @@
-requests
 pandas
-plotly
-scikit-learn
-pytest
-google-genai
+pyarrow
+numpy
+scipy
+matplotlib
 python-dotenv
+google-genai
 groq
-Flask
+sacrebleu
+rouge-score
+bert-score

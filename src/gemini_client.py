@@ -8,7 +8,7 @@ load_dotenv()
 
 GEMINI_MODEL = "gemini-3.5-flash-lite"
 
-def generate_text(prompt, temperature=0.7):
+def generate_text(prompt, temperature=0.7, max_tokens=3000):
     api_key = os.getenv("GEMINI_API_KEY")
 
     if not api_key:
@@ -28,7 +28,7 @@ def generate_text(prompt, temperature=0.7):
             contents=prompt,
             config=types.GenerateContentConfig(
                 temperature=temperature,
-                max_output_tokens=800,
+                max_output_tokens=max_tokens,
             ),
         )
 

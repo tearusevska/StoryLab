@@ -7,7 +7,7 @@ load_dotenv()
 
 GPT_OSS_MODEL = "openai/gpt-oss-20b"
 
-def generate_text(prompt, temperature=0.7):
+def generate_text(prompt, temperature=0.7, max_tokens=3000):
     api_key = os.getenv("GROQ_API_KEY")
 
     if not api_key:
@@ -29,7 +29,7 @@ def generate_text(prompt, temperature=0.7):
                 }
             ],
             temperature=temperature,
-            max_completion_tokens=3000,
+            max_completion_tokens=max_tokens,
             reasoning_effort="low",
             include_reasoning=False,
         )

@@ -1,121 +1,44 @@
-def build_story_prompt(
-    genre,
-    topic,
-    style,
-    characters,
-    language,
-    strategy,
-    previous_story="",
-    user_choice="",
-):
-    task = f"""
-Write in {language}.
-
-Genre: {genre}
-Topic: {topic}
-Writing style: {style}
-Characters: {characters}
-
-Requirements:
-- Write an engaging and coherent story.
-- Keep characters and events consistent.
-- Follow the selected genre and writing style.
-- Write natural prose, not a list.
-"""
-
-    if previous_story:
-        task += f"""
-Continue the existing story. Do not restart or repeat it.
-
-Previous story:
-{previous_story}
-"""
-
-    if user_choice:
-        task += f"""
-The user's choice for the next event is:
-{user_choice}
-
-Make this choice clearly affect what happens next.
-"""
+def build_writing_prompt(writing_prompt, strategy, examples=None, target_words=400):
+    base = (
+        f"Write a short story of about {target_words} words "
+        f"based on this writing prompt:\n\n{writing_prompt}"
+    )
 
     if strategy == "Zero-shot":
-        instruction = task
+        instruction = base
 
     elif strategy == "Few-shot":
-        instruction = f"""
-Example:
-Previous scene: A traveler finds a mysterious key.
-User choice: Open the old wooden door.
-Continuation: Behind the door is a forgotten library.
+        if not examples:
+            raise ValueError("Few-shot strategy requires examples.")
 
-Use this only as an example of a continuation.
-Do not reuse its characters or events.
+        example_blocks = []
+        for number, example in enumerate(examples, start=1):
+            example_blocks.append(
+                f"Example {number}\n"
+                f"Writing prompt: {example['prompt']}\n"
+                f"Story:\n{example['story']}"
+            )
 
-{task}
-"""
+        instruction = (
+            "Below are examples of writing prompts and the stories written for them.\n\n"
+            + "\n\n".join(example_blocks)
+            + "\n\nNow write a new story in the same way. "
+            "Do not reuse the characters or events from the examples.\n\n"
+            + base
+        )
 
     elif strategy == "Structured":
-        instruction = f"""
-Follow these requirements:
-1. Continue existing events when a previous story is provided.
-2. Incorporate the user's choice when provided.
-3. Maintain consistency.
-4. Return only the story, without explanations.
-
-{task}
-"""
+        instruction = (
+            f"{base}\n\n"
+            "Requirements:\n"
+            "1. Stay faithful to the writing prompt.\n"
+            "2. Give the story a clear beginning, a development, and an ending.\n"
+            "3. Keep characters, setting, and events consistent.\n"
+            "4. Make the story engaging and original.\n"
+            "5. Use natural, fluent prose."
+        )
 
     else:
         raise ValueError(f"Unknown prompting strategy: {strategy}")
 
-    instruction += "\nReturn only the requested story text."
-    return instruction.strip()
-
-
-def build_opening_prompt(
-    genre, topic, style, characters, language, strategy, word_limit=150
-):
-    prompt = build_story_prompt(
-        genre, topic, style, characters, language, strategy
-    )
-    return (
-        prompt
-        + f"\nWrite the opening segment in approximately {word_limit} words."
-    )
-
-
-def build_choices_prompt(previous_story, language):
-    return f"""
-Based on the story below, suggest exactly three possible next events.
-
-Story:
-{previous_story}
-
-Language: {language}
-
-Strict requirements:
-- Return exactly three options, numbered 1., 2., and 3.
-- Each option must be one short sentence of no more than 12 words.
-- Describe one specific thing that could happen next.
-- Make the three options clearly different.
-- Do not write paragraphs, explanations, dialogue, or story continuations.
-- Do not include an introduction or conclusion.
-"""
-
-
-def build_ending_prompt(previous_story, language, user_choice="End the story"):
-    return f"""
-Write a coherent ending in {language} for the existing story.
-
-Resolve the main conflict naturally and respect the established characters
-and events. Do not restart or repeat the story.
-
-Story so far:
-{previous_story}
-
-Ending direction:
-{user_choice}
-
-Return only the ending text.
-"""
+    return instruction + "\n\nReturn only the story text."
